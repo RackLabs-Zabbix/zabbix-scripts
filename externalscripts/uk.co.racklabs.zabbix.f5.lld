@@ -1,0 +1,103 @@
+#!/usr/bin/python
+
+"""
+uk.co.racklabs.zabbix.f5.lld Low Level Discovery script for F5 BigIP 1600 Load
+balancers. Tested on v10.x
+
+License: GPL2
+
+Key: uk.co.racklabs.zabbix.f5.lld[{HOST.IP},{$CONSTRING},type]
+"""
+
+from pprint import pprint as pp
+import netsnmp
+from syslog import syslog
+import sys
+
+class f5:
+    """
+    F5 class
+    """
+    class lld:
+        """
+        The LLD class for f5 LLD
+
+        @type ip: str
+        @param ip: IP Address
+        @type com: str
+        @param com: SNMP Community String
+        @type type: int
+        @param type: Type of LLD (0:Virtual, 1:pool)
+        """
+        def __init__(self, ip, com, type):
+            
+            self.ip = ip
+            self.com = com
+            self.type = type
+            if type == '0':
+                """
+                Virtuals
+                """
+                self.baseoid = ".1.3.6.1.4.1.3375.2.2.10.1.2.1.1"
+                self.nameoid = ".1.3.6.1.4.1.3375.2.2.10.1.2.1.1"
+            elif type == '1':
+                """
+                pools
+                """
+                self.nameoid = ".1.3.6.1.4.1.3375.2.2.5.1.2.1.1"
+                self.baseoid = ".1.3.6.1.4.1.3375.2.2.5.1.2.1"
+            elif type == '2':
+                """
+                pool members
+                """
+                self.nameoid = ".1.3.6.1.4.1.3375.2.2.5.3.2.1.1"
+                self.baseoid = ".1.3.6.1.4.1.3375.2.2.5.3.2.1"
+            else:
+                self.baseoid = "0.0.0.0.0.0.0"
+        def snmp_worker(self,dst,com):
+           self.snmp = netsnmp.Session(Version=2,DestHost=dst,Community=com)
+           self.snmp.UseLongNames = 1
+           self.f5 = netsnmp.Varbind(self.nameoid)
+           self.oid = netsnmp.VarList(self.f5)
+           self.snmp.walk(self.oid)
+
+        def get_member_name(self,m):
+            hex = [m[i:i+1].encode('hex') for i in range(0,len(m), 1)]
+            first = 1
+            for h in hex:
+                if first == 1:
+                    s = "%s" % int(h,16)
+                    first = 0
+                else:
+                    s += ".%s" % int(h,16)
+            return s
+        def main(self):
+            """
+            Main worker
+            """
+            self.snmp_worker(self.ip,self.com)
+            ret  = "{\n\"data\":[\n"
+            i = 0
+            d = ""
+            for o in self.oid:
+                if i == 0:
+                   d = ""
+                   i += 1
+                else:
+                   d = ","
+                if self.type == '2':
+                    ip = self.snmp.get(netsnmp.VarList('.1.3.6.1.4.1.3375.2.2.5.4.3.1.3.%s' % (o.iid)))[0]
+                    port = self.snmp.get(netsnmp.VarList('.1.3.6.1.4.1.3375.2.2.5.4.3.1.4.%s' % (o.iid)))[0]
+                    addname = "-%s-%s" % (self.get_member_name(ip),port)
+                    ret += " %s{ \"{#NAME}\":\"%s%s\", \"{#OID}\":\"%s\"}\n " % ( d,o.val, addname, o.iid )
+                else:
+                    ret += " %s{ \"{#NAME}\":\"%s\", \"{#OID}\":\"%s\"}\n " % ( d,o.val,  o.iid)
+            ret += "]\n}"
+            return ret
+
+
+
+if __name__ == "__main__":
+    syslog("Trying as %s %s %s" %(sys.argv[1],sys.argv[2],sys.argv[3]))
+    lld = f5.lld(ip=sys.argv[1],com=sys.argv[2],type=sys.argv[3])
+    print(lld.main())

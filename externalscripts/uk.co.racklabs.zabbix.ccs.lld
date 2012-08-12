@@ -1,0 +1,78 @@
+#!/usr/bin/python
+
+"""
+uk.co.racklabs.zabbix.css.lld Low Level Discovery script for CSS Load
+balancers. Tested on v7
+
+License: GPL2
+
+Key: uk.co.racklabs.zabbix.css.lld[{HOST.IP},{$CONSTRING},type]
+"""
+
+import re
+from pprint import pprint as pp
+import netsnmp
+import sys
+
+
+class css:
+    """
+    css class
+    """
+    class lld:
+        """
+        The LLD class for css LLD
+
+        @type ip: str
+        @param ip: IP Address
+        @type com: str
+        @param com: SNMP Community String
+        @type type: int
+        @param type: Type of LLD (0:Virtual, 1:service)
+        """
+        def __init__(self, ip, com, type):
+
+            self.ip = ip
+            self.com = com
+            self.type = type
+            if type == '0':
+                """
+                Virtuals
+                """
+                self.baseoid = ".1.3.6.1.4.1.9.9.368.1.16.4.1.2"
+                self.basestrip = ".iso.org.dod.internet.private.enterprises.9.9.368.1.16.4.1.2."
+            elif type == '1':
+                """
+                Virtuals
+                """
+                self.baseoid = ".1.3.6.1.4.1.9.9.368.1.15.2.1.1"
+                self.basestrip = ".iso.org.dod.internet.private.enterprises.9.9.368.1.15.2.1.1."
+
+        def snmp_worker(self,dst,com):
+           self.snmp = netsnmp.Session(Version=2,DestHost=dst,Community=com)
+           self.snmp.UseLongNames = 1
+           self.css = netsnmp.Varbind(self.baseoid)
+           self.oid = netsnmp.VarList(self.css)
+           self.snmp.walk(self.oid)
+
+        def stripbase(self,tag):
+            reobj = re.compile("%s(.*)" % self.basestrip)
+            result = reobj.findall(tag)
+            return result[0]
+        def main(self):
+            """
+            Main worker
+            """
+            self.snmp_worker(self.ip,self.com)
+            ret  = "{\n\"data\":[\n"
+            for o in self.oid:
+                oid = self.stripbase(o.tag)
+                ret += " { \"{#NAME}\":\"%s\", \"{#OID}\":\"%s\"},\n " % ( o.val, oid)
+            ret += "]\n}"
+            return ret
+
+
+
+if __name__ == "__main__":
+    lld = css.lld(ip=sys.argv[1],com=sys.argv[2],type=sys.argv[3])
+    print(lld.main())

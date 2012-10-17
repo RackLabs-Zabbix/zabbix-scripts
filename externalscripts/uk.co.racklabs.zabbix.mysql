@@ -1,0 +1,247 @@
+#!/bin/sh
+
+sudo /etc/init.d/mysqld status 2>/dev/null 1>/dev/null
+
+if [ $? -eq 0 ]; then
+
+case $1 in
+        'FragmentedTables')
+        mysql -u root -e "SELECT COUNT(TABLE_NAME) as Frag FROM information_schema.TABLES WHERE TABLE_SCHEMA NOT IN ('information_schema','mysql') AND Data_free > 10000\G"|grep Frag|awk '{print $2}'
+        ;;
+        'Aborted_clients')
+    mysql -u root -e "show global status like 'Aborted_clients'\G"|grep Value| awk '{print $2}'
+;;
+'Aborted_connects')
+    mysql -u root -e "show global status like 'Aborted_connects'\G"|grep Value| awk '{print $2}'
+;;
+'Binlog_cache_disk_use')
+    mysql -u root -e "show global status like 'Binlog_cache_disk_use'\G"|grep Value| awk '{print $2}'
+;;
+'Binlog_cache_use')
+    mysql -u root -e "show global status like 'Binlog_cache_use'\G"|grep Value| awk '{print $2}'
+;;
+'Bytes_received')
+    mysql -u root -e "show global status like 'Bytes_received'\G"|grep Value| awk '{print $2}'
+;;
+'Bytes_sent')
+    mysql -u root -e "show global status like 'Bytes_sent'\G"|grep Value| awk '{print $2}'
+;;
+'Com_alter_db')
+    mysql -u root -e "show global status like 'Com_alter_db'\G"|grep Value| awk '{print $2}'
+;;
+'Com_alter_table')
+    mysql -u root -e "show global status like 'Com_alter_table'\G"|grep Value| awk '{print $2}'
+;;
+'Com_create_db')
+    mysql -u root -e "show global status like 'Com_create_db'\G"|grep Value| awk '{print $2}'
+;;
+'Com_create_function')
+    mysql -u root -e "show global status like 'Com_create_function'\G"|grep Value| awk '{print $2}'
+;;
+'Com_create_index')
+    mysql -u root -e "show global status like 'Com_create_index'\G"|grep Value| awk '{print $2}'
+;;
+'Com_create_table')
+    mysql -u root -e "show global status like 'Com_create_table'\G"|grep Value| awk '{print $2}'
+;;
+'Com_delete')
+    mysql -u root -e "show global status like 'Com_delete'\G"|grep Value| awk '{print $2}'
+;;
+'Com_drop_db')
+    mysql -u root -e "show global status like 'Com_drop_db'\G"|grep Value| awk '{print $2}'
+;;
+'Com_drop_function')
+    mysql -u root -e "show global status like 'Com_drop_function'\G"|grep Value| awk '{print $2}'
+;;
+'Com_drop_index')
+    mysql -u root -e "show global status like 'Com_drop_index'\G"|grep Value| awk '{print $2}'
+;;
+'Com_drop_table')
+    mysql -u root -e "show global status like 'Com_drop_table'\G"|grep Value| awk '{print $2}'
+;;
+'Com_drop_user')
+    mysql -u root -e "show global status like 'Com_drop_user'\G"|grep Value| awk '{print $2}'
+;;
+'Com_grant')
+    mysql -u root -e "show global status like 'Com_grant'\G"|grep Value| awk '{print $2}'
+;;
+'Com_insert')
+    mysql -u root -e "show global status like 'Com_insert'\G"|grep Value| awk '{print $2}'
+;;
+'Com_replace')
+    mysql -u root -e "show global status like 'Com_replace'\G"|grep Value| awk '{print $2}'
+;;
+'Com_revoke')
+    mysql -u root -e "show global status like 'Com_revoke'\G"|grep Value| awk '{print $2}'
+;;
+'Com_revoke_all')
+    mysql -u root -e "show global status like 'Com_revoke_all'\G"|grep Value| awk '{print $2}'
+;;
+'Com_select')
+    mysql -u root -e "show global status like 'Com_select'\G"|grep Value| awk '{print $2}'
+;;
+'Com_update')
+    mysql -u root -e "show global status like 'Com_update'\G"|grep Value| awk '{print $2}'
+;;
+'Connections')
+    mysql -u root -e "show global status like 'Connections'\G"|grep Value| awk '{print $2}'
+;;
+'Created_tmp_disk_tables')
+    mysql -u root -e "show global status like 'Created_tmp_disk_tables'\G"|grep Value| awk '{print $2}'
+;;
+'Created_tmp_tables')
+    mysql -u root -e "show global status like 'Created_tmp_tables'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_first')
+    mysql -u root -e "show global status like 'Handler_read_first'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_key')
+    mysql -u root -e "show global status like 'Handler_read_key'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_next')
+    mysql -u root -e "show global status like 'Handler_read_next'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_prev')
+    mysql -u root -e "show global status like 'Handler_read_prev'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_rnd')
+    mysql -u root -e "show global status like 'Handler_read_rnd'\G"|grep Value| awk '{print $2}'
+;;
+'Handler_read_rnd_next')
+    mysql -u root -e "show global status like 'Handler_read_rnd_next'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_buffer_pool_read_requests')
+    mysql -u root -e "show global status like 'Innodb_buffer_pool_read_requests'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_buffer_pool_reads')
+    mysql -u root -e "show global status like 'Innodb_buffer_pool_reads'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_buffer_pool_wait_free')
+    mysql -u root -e "show global status like 'Innodb_buffer_pool_wait_free'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_buffer_pool_write_requests')
+    mysql -u root -e "show global status like 'Innodb_buffer_pool_write_requests'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_log_waits')
+    mysql -u root -e "show global status like 'Innodb_log_waits'\G"|grep Value| awk '{print $2}'
+;;
+'Innodb_log_writes')
+    mysql -u root -e "show global status like 'Innodb_log_writes'\G"|grep Value| awk '{print $2}'
+;;
+'Key_blocks_unused')
+    mysql -u root -e "show global status like 'Key_blocks_unused'\G"|grep Value| awk '{print $2}'
+;;
+'Key_read_requests')
+    mysql -u root -e "show global status like 'Key_read_requests'\G"|grep Value| awk '{print $2}'
+;;
+'Key_reads')
+    mysql -u root -e "show global status like 'Key_reads'\G"|grep Value| awk '{print $2}'
+;;
+'Key_write_requests')
+    mysql -u root -e "show global status like 'Key_write_requests'\G"|grep Value| awk '{print $2}'
+;;
+'Key_writes')
+    mysql -u root -e "show global status like 'Key_writes'\G"|grep Value| awk '{print $2}'
+;;
+'Max_used_connections')
+    mysql -u root -e "show global status like 'Max_used_connections'\G"|grep Value| awk '{print $2}'
+;;
+'Open_files')
+    mysql -u root -e "show global status like 'Open_files'\G"|grep Value| awk '{print $2}'
+;;
+'Open_tables')
+    mysql -u root -e "show global status like 'Open_tables'\G"|grep Value| awk '{print $2}'
+;;
+'Opened_tables')
+    mysql -u root -e "show global status like 'Opened_tables'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_free_blocks')
+    mysql -u root -e "show global status like 'Qcache_free_blocks'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_free_memory')
+    mysql -u root -e "show global status like 'Qcache_free_memory'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_hits')
+    mysql -u root -e "show global status like 'Qcache_hits'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_inserts')
+    mysql -u root -e "show global status like 'Qcache_inserts'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_lowmem_prunes')
+    mysql -u root -e "show global status like 'Qcache_lowmem_prunes'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_not_cached')
+    mysql -u root -e "show global status like 'Qcache_not_cached'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_queries_in_cache')
+    mysql -u root -e "show global status like 'Qcache_queries_in_cache'\G"|grep Value| awk '{print $2}'
+;;
+'Qcache_total_blocks')
+    mysql -u root -e "show global status like 'Qcache_total_blocks'\G"|grep Value| awk '{print $2}'
+;;
+'Questions')
+    mysql -u root -e "show global status like 'Questions'\G"|grep Value| awk '{print $2}'
+;;
+'Select_full_join')
+    mysql -u root -e "show global status like 'Select_full_join'\G"|grep Value| awk '{print $2}'
+;;
+'Select_range')
+    mysql -u root -e "show global status like 'Select_range'\G"|grep Value| awk '{print $2}'
+;;
+'Select_range_check')
+    mysql -u root -e "show global status like 'Select_range_check'\G"|grep Value| awk '{print $2}'
+;;
+'Select_scan')
+    mysql -u root -e "show global status like 'Select_scan'\G"|grep Value| awk '{print $2}'
+;;
+'Slave_running')
+    mysql -u root -e "show global status like 'Slave_running'\G"|grep Value| awk '{print $2}'
+;;
+'Slow_launch_threads')
+    mysql -u root -e "show global status like 'Slow_launch_threads'\G"|grep Value| awk '{print $2}'
+;;
+'Slow_queries')
+    mysql -u root -e "show global status like 'Slow_queries'\G"|grep Value| awk '{print $2}'
+;;
+'Sort_merge_passes')
+    mysql -u root -e "show global status like 'Sort_merge_passes'\G"|grep Value| awk '{print $2}'
+;;
+'Sort_range')
+    mysql -u root -e "show global status like 'Sort_range'\G"|grep Value| awk '{print $2}'
+;;
+'Sort_rows')
+    mysql -u root -e "show global status like 'Sort_rows'\G"|grep Value| awk '{print $2}'
+;;
+'Sort_scan')
+    mysql -u root -e "show global status like 'Sort_scan'\G"|grep Value| awk '{print $2}'
+;;
+'Table_locks_immediate')
+    mysql -u root -e "show global status like 'Table_locks_immediate'\G"|grep Value| awk '{print $2}'
+;;
+'Table_locks_waited')
+    mysql -u root -e "show global status like 'Table_locks_waited'\G"|grep Value| awk '{print $2}'
+;;
+'Threads_cached')
+    mysql -u root -e "show global status like 'Threads_cached'\G"|grep Value| awk '{print $2}'
+;;
+'Threads_connected')
+    mysql -u root -e "show global status like 'Threads_connected'\G"|grep Value| awk '{print $2}'
+;;
+'Threads_created')
+    mysql -u root -e "show global status like 'Threads_created'\G"|grep Value| awk '{print $2}'
+;;
+'Threads_running')
+    mysql -u root -e "show global status like 'Threads_running'\G"|grep Value| awk '{print $2}'
+;;
+'Uptime')
+    mysql -u root -e "show global status like 'Uptime'\G"|grep Value| awk '{print $2}'
+;;
+*)
+        echo "ZBX_NOTSUPPORTED"
+        ;;
+esac
+
+else
+        echo "ZBX_NOTSUPPORTED"
+fi
+

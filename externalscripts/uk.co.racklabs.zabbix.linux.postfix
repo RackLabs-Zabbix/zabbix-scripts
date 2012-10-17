@@ -1,0 +1,9 @@
+#!/bin/sh
+if [[ "$1" == received ]]; then
+        sudo /usr/sbin/pflogsumm -h 0 -u 0 --no_bounce_detail --no_deferral_detail --no_reject_detail --no_no_msg_size --no_smtpd_warnings /var/log/maillog |grep Grand\ Totals -A19|grep -vE "^$|^--|^Grand\ Tot|^messa|bytes"| grep "$1" |awk '{print $1}'
+elif [[ "$1" == sent ]]; then
+        sudo /usr/sbin/pflogsumm -h 0 -u 0 --no_bounce_detail --no_deferral_detail --no_reject_detail --no_no_msg_size --no_smtpd_warnings /var/log/maillog |grep Grand\ Totals -A19|grep -vE "^$|^--|^Grand\ Tot|^messa|bytes"| grep "$1" | awk '{print $1}'
+else
+        sudo /usr/sbin/pflogsumm -h 0 -u 0 --no_bounce_detail --no_deferral_detail --no_reject_detail --no_no_msg_size --no_smtpd_warnings /var/log/maillog |grep Grand\ Totals -A19|grep -vE "^$|^--|^Grand\ Tot|^messa"| grep "$1" | awk '{print $1}'
+fi
+

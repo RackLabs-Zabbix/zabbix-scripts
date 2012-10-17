@@ -1,0 +1,67 @@
+#!/bin/sh
+
+SS=$(wget --quiet -O - http://$1/$2?auto)
+
+case $3 in
+        'Uptime')
+        echo "$SS"|grep "Uptime"| awk '{print $2}'
+        ;;
+        'TotalAccesses')
+        echo "$SS"|grep "Total Accesses:"| awk '{print $3}'
+        ;;
+        'TotalKBytes')
+        echo "$SS"|grep "Total kBytes"| awk '{print $3}'
+        ;;
+        'ReqPerSec')
+        echo "$SS"|grep "ReqPerSec"| awk '{print $2}'
+        ;;
+        'BytesPerSec')
+        echo "$SS"|grep "BytesPerSec"| awk '{print $2}'
+        ;;
+        'BytesPerReq')
+        echo "$SS"|grep "BytesPerReq"| awk '{print $2}'
+        ;;
+        'BusyWorkers')
+        echo "$SS"|grep "BusyWorkers:"|awk '{print $2}'
+        ;;
+        'IdleWorkers')
+        echo "$SS"|grep "IdleWorkers:"|awk '{print $2}'
+        ;;
+        'WaitingForConnection')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "_" } ; { print NF-1 }'
+        ;;
+        'StartingUp')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "S" } ; { print NF-1 }'
+        ;;
+        'ReadingRequest')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "R" } ; { print NF-1 }'
+        ;;
+        'SendingReply')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "W" } ; { print NF-1 }'
+        ;;
+        'KeepAlive')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "K" } ; { print NF-1 }'
+        ;;
+        'DNSLookup')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "D" } ; { print NF-1 }'
+        ;;
+        'ClosingConnection')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "C" } ; { print NF-1 }'
+        ;;
+        'Logging')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "L" } ; { print NF-1 }'
+        ;;
+        'GracefullyFinishing')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "G" } ; { print NF-1 }'
+        ;;
+        'IdleCleanupOfWorker')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "I" } ; { print NF-1 }'
+        ;;
+        'OpenSlotWithNoCurrentProcess')
+        echo "$SS"|grep "Scoreboard:"| awk '{print $2}'| awk 'BEGIN { FS = "." } ; { print NF-1 }'
+        ;;
+*)
+        echo "ZBX_NOTSUPPORTED"
+        ;;
+esac
+

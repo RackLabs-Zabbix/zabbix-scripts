@@ -76,3 +76,4 @@ class css:
 if __name__ == "__main__":
     lld = css.lld(ip=sys.argv[1],com=sys.argv[2],type=sys.argv[3])
     print(lld.main())
+

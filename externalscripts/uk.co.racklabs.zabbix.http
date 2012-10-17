@@ -1,0 +1,32 @@
+#!/bin/sh
+# Zabbix Web Check Script
+# This is a quick and dirty script to return the time take to grab a page + all assests
+
+URL=$1
+
+if [ -z "$URL" ]; then
+        echo "No site given"
+        exit 255
+fi
+echo $URL | grep -E "\"|'|\||\`|;"
+if [ "$?" -lt 1 ]; then
+        echo "Incorect URL format"
+        exit 254
+fi
+logger "Trying to retreive $URL"
+
+DIR=`mktemp`.wget
+mkdir $DIR
+TMP=`mktemp`
+cd $DIR
+RESP=`/usr/bin/time -f "%e" wget $URL --no-cache -p --delete-after -o $TMP`
+if [ "$?" -eq 0 ]; then
+        echo $RESP | grep -v "^$"
+else
+        echo "0.000"
+        exit 253
+fi
+cd /
+rm $TMP
+rm -r $DIR
+
